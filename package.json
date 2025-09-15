@@ -1,5 +1,8 @@
 {
-  "devDependencies": {
+  "name": "templ-test",
+  "version": "1.0.0",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.13",
     "tailwindcss": "^4.1.13"
   }
 }
