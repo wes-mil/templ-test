@@ -5,7 +5,6 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/a-h/templ"
 	"github.com/wes-mil/templ-test/components"
 )
 
@@ -13,13 +12,19 @@ import (
 var static embed.FS
 
 func main() {
-	homePage := components.Index()
-
 	pagesHandler := http.NewServeMux()
-	pagesHandler.Handle("/", templ.Handler(homePage))
+	pagesHandler.HandleFunc("/", getIndex)
 	pagesHandler.Handle("/static/", http.FileServer(http.FS(static)))
+
+	pagesHandler.HandleFunc("POST /incrementCount", IncreaseCount)
+	pagesHandler.HandleFunc("POST /decrementCount", DecrementCount)
 
 	if err := http.ListenAndServe(":3000", pagesHandler); err != nil {
 		slog.Error("server failed", "error", err)
 	}
+}
+
+func getIndex(w http.ResponseWriter, r *http.Request) {
+	component := components.Index(Count)
+	component.Render(r.Context(), w)
 }
